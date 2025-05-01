@@ -52,6 +52,66 @@ double cell::divergence(){
     return d;
 }
 
+// Update cell velocity
+void cell::updateVel(const std::vector<std::vector<cell>>& grid, double d){
+
+    std::array<int, 4> nachbarWalls = {0,0,0,0}; // Neighbors are stored clockwise starting at the left side
+    int nachbarCount = 0;
+
+    // Check Left Neighbor
+    if (coordinates[0] == 0){
+        nachbarWalls[0] = 1;
+    } else {
+        nachbarWalls[0] = grid[coordinates[0]-1][coordinates[1]].type;
+    }
+    
+    // Check Right Neighbor
+    if (coordinates[0] == grid.size()){
+        nachbarWalls[2] = 1;
+    } else {
+        nachbarWalls[2] = grid[coordinates[0]+1][coordinates[1]].type;
+    }
+
+    // Check Upper Neighbor
+    if (coordinates[1] == grid[coordinates[0]].size()){
+        nachbarWalls[1] = 1;
+    } else {
+        nachbarWalls[1] = grid[coordinates[0]][coordinates[1]+1].type;
+    }
+
+    // Check Lower Neighbor
+    if (coordinates[1] == 0){
+        nachbarWalls[3] = 1;
+    } else {
+        nachbarWalls[3] = grid[coordinates[0]][coordinates[1]-1].type;
+    }
+    
+    // Count the walls
+    for (int i = 0; i < 4; i++){
+        if (nachbarWalls[i] == 1){
+            nachbarCount++;
+        }
+    }
+
+    // update velocities
+
+    if(nachbarWalls[0] == 0){
+        velocity[0][0] = velocity[0][0] + (d/(4 - nachbarCount));
+    }
+
+    if(nachbarWalls[2] == 0){
+        velocity[0][1] = velocity[0][1] + (d/(4 - nachbarCount));
+    }
+
+    if(nachbarWalls[3] == 0){
+        velocity[1][1] = velocity[1][1] + (d/(4 - nachbarCount));
+    }
+
+    if(nachbarWalls[1] == 0){
+        velocity[0][1] = velocity[0][1] + (d/(4 - nachbarCount));
+    }
+}
+
 
 
 

@@ -20,10 +20,11 @@ class cell{
         double height;
         std::array<std::array<double, 2>, 2> velocity; // The first row is horizontal velocity from left to right. the second row is vertical L to R = Up to Down
         double pressure;
-        int type;
+        int type; // 0 is air and 1 is wall
 
         // Public methods
         double divergence();
+        void updateVel(const std::vector<std::vector<cell>>& grid,double d);
 
 };
 
