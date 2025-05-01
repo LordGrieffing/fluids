@@ -46,7 +46,11 @@ std::array<double, 2> particle::getDelta(const std::array<int, 2>& cell, double 
 
 
 
-
+// Get the divergence of a cell
+double cell::divergence(){
+    double d = (velocity[0][1] - velocity[0][0]) + (velocity[1][0] - velocity[1][1]);
+    return d;
+}
 
 
 
