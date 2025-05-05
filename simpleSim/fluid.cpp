@@ -56,51 +56,40 @@ double cell::divergence(){
 void cell::updateVel(const std::vector<std::vector<cell>>& grid, double d){
 
     std::array<int, 4> nachbarWalls = {0,0,0,0}; // Neighbors are stored clockwise starting at the left side
-    int nachbarCount = 0;
+    int x = coordinates[0], y = coordinates[1];
+    int width = grid.size(), height = grid[0].size();
+    int nachbarCount;
 
     // Check Left Neighbor
-    if (coordinates[0] == 0){
+    if (x == 0 || grid[x-1][y].type == 1){
         nachbarWalls[0] = 1;
-    } else {
-        nachbarWalls[0] = grid[coordinates[0]-1][coordinates[1]].type;
     }
     
     // Check Right Neighbor
-    if (coordinates[0] == grid.size()){
+    if (x == width - 1 || grid[x+1][y].type == 1){
         nachbarWalls[2] = 1;
-    } else {
-        nachbarWalls[2] = grid[coordinates[0]+1][coordinates[1]].type;
     }
 
     // Check Upper Neighbor
-    if (coordinates[1] == grid[coordinates[0]].size()){
+    if (y == height - 1 || grid[x][y+1].type == 1){
         nachbarWalls[1] = 1;
-    } else {
-        nachbarWalls[1] = grid[coordinates[0]][coordinates[1]+1].type;
-    }
+    } 
 
     // Check Lower Neighbor
-    if (coordinates[1] == 0){
+    if (y == 0 || grid[x][y-1].type == 1){
         nachbarWalls[3] = 1;
-    } else {
-        nachbarWalls[3] = grid[coordinates[0]][coordinates[1]-1].type;
     }
     
     // Count the walls
-    for (int i = 0; i < 4; i++){
-        if (nachbarWalls[i] == 1){
-            nachbarCount++;
-        }
-    }
+    nachbarCount = nachbarWalls[0] + nachbarWalls[1] + nachbarWalls[2] + nachbarWalls[3];
 
     // update velocities
-
     if(nachbarWalls[0] == 0){
         velocity[0][0] = velocity[0][0] + (d/(4 - nachbarCount));
     }
 
     if(nachbarWalls[2] == 0){
-        velocity[0][1] = velocity[0][1] + (d/(4 - nachbarCount));
+        velocity[0][1] = velocity[0][1] - (d/(4 - nachbarCount));
     }
 
     if(nachbarWalls[3] == 0){
@@ -108,7 +97,7 @@ void cell::updateVel(const std::vector<std::vector<cell>>& grid, double d){
     }
 
     if(nachbarWalls[1] == 0){
-        velocity[0][1] = velocity[0][1] + (d/(4 - nachbarCount));
+        velocity[1][0] = velocity[0][1] - (d/(4 - nachbarCount));
     }
 }
 
